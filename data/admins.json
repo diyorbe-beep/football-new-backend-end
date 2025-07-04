@@ -1,0 +1,14 @@
+[
+  {
+    "id": "superadmin-1",
+    "name": "Asosiy Admin",
+    "email": "superadmin@mail.com",
+    "role": "superadmin"
+  },
+  {
+    "id": "f987edc8-1e02-4675-95c2-404d29e7c029",
+    "name": "admin",
+    "email": "admin@mail.com",
+    "role": "admin"
+  }
+]

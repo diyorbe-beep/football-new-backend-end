@@ -1,0 +1,65 @@
+[
+  {
+    "id": "superadmin-1",
+    "name": "Asosiy Admin",
+    "email": "superadmin@mail.com",
+    "password": "admin123",
+    "role": "superadmin"
+  },
+  {
+    "id": "admin-1",
+    "name": "Admin",
+    "email": "admin@mail.com",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "id": "189ebd6b-3564-47bd-9a08-cf7be2eec650",
+    "name": "diyorbek",
+    "email": "'sdjjb'joafb@gmail.com",
+    "password": "123456789",
+    "role": "user"
+  },
+  {
+    "id": "f1e4f4fd-fc57-4973-8c5a-7cb4cb638112",
+    "name": "sdfsdfsd",
+    "email": "dsdsfdg@gmail.com",
+    "password": "123456789",
+    "role": "user"
+  },
+  {
+    "id": "cb0b1703-0e50-4712-b972-81b894a3b4bf",
+    "name": "asfdafds",
+    "email": "asdasfasfs@gmail.com",
+    "password": "123456789",
+    "role": "user"
+  },
+  {
+    "id": "09a90e9f-a0b6-4300-8a0f-1f8adb8307f5",
+    "name": "fghfghgfhfg",
+    "email": "sdfhsdhdh@gmail.com",
+    "password": "123456789",
+    "role": "user"
+  },
+  {
+    "id": "ba66d0e9-6183-43f7-8fc6-01627b66bde9",
+    "name": "diyorbek",
+    "email": "marufzonkodirov0@gmail.com",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "id": "f987edc8-1e02-4675-95c2-404d29e7c029",
+    "name": "admin",
+    "email": "admin@mail.com",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "id": "ae6d2e28-882f-46c5-9628-cca64d510453",
+    "name": "asdasdas",
+    "email": "asdadasas@gmail.com",
+    "password": "123456789",
+    "role": "user"
+  }
+]

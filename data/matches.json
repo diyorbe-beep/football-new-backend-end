@@ -1,0 +1,14 @@
+[
+  {
+    "home": {
+      "name": "Milan",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg"
+    },
+    "away": {
+      "name": "Roma",
+      "logo": "https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg"
+    },
+    "time": "10:00",
+    "date": "2000-01-04"
+  }
+]
