@@ -28,6 +28,12 @@ app.use(bodyParser.json());
 const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 
+// Ensure matches.json exists
+const matchesFile = path.join(dataDir, 'matches.json');
+if (!fs.existsSync(matchesFile)) {
+  fs.writeFileSync(matchesFile, JSON.stringify([], null, 2));
+}
+
 // Superadmin va admin ma'lumotlari
 const SUPERADMIN = {
   id: 'superadmin-1',
@@ -91,7 +97,7 @@ app.get('/api/news', (req, res) => {
 });
 
 app.post('/api/news', (req, res) => {
-  const { title, content, image, status } = req.body;
+  const { title, content, image, status, isFeatured } = req.body;
   if (!title || !content) return res.status(400).json({ error: 'Title va content majburiy' });
   const news = readData('news.json');
   const newNews = {
@@ -101,11 +107,36 @@ app.post('/api/news', (req, res) => {
     image: image || null,
     status: status || 'Draft',
     deleted: false,
-    publishedAt: new Date().toISOString()
+    publishedAt: new Date().toISOString(),
+    isFeatured: !!isFeatured
   };
+  // Faqat bitta yangilik kun yangiligi bo'lishi mumkin
+  if (isFeatured) {
+    news.forEach(n => { n.isFeatured = false; });
+  }
   news.unshift(newNews);
   writeData('news.json', news);
   res.status(201).json(newNews);
+});
+
+app.put('/api/news/:id', (req, res) => {
+  const { id } = req.params;
+  const { title, content, image, status, isFeatured } = req.body;
+  let news = readData('news.json');
+  // Faqat bitta yangilik kun yangiligi bo'lishi mumkin
+  if (isFeatured) {
+    news.forEach(n => { n.isFeatured = false; });
+  }
+  news = news.map(n => n.id === id ? {
+    ...n,
+    title: title || n.title,
+    content: content || n.content,
+    image: image !== undefined ? image : n.image,
+    status: status || n.status,
+    isFeatured: !!isFeatured
+  } : n);
+  writeData('news.json', news);
+  res.json({ success: true });
 });
 
 app.delete('/api/news/:id', (req, res) => {
@@ -113,6 +144,41 @@ app.delete('/api/news/:id', (req, res) => {
   let news = readData('news.json');
   news = news.map(n => n.id === id ? { ...n, deleted: true } : n);
   writeData('news.json', news);
+  res.json({ success: true });
+});
+
+// --- News Comments API ---
+app.get('/api/news/:id/comments', (req, res) => {
+  const { id } = req.params;
+  const comments = readData('comments.json');
+  const newsComments = comments.filter(c => c.newsId === id);
+  res.json(newsComments);
+});
+
+app.post('/api/news/:id/comments', (req, res) => {
+  const { id } = req.params;
+  const { author, text } = req.body;
+  if (!author || !text) return res.status(400).json({ error: 'Ism va izoh majburiy' });
+  const comments = readData('comments.json');
+  const newComment = {
+    id: uuidv4(),
+    newsId: id,
+    author,
+    text,
+    createdAt: new Date().toISOString()
+  };
+  comments.push(newComment);
+  writeData('comments.json', comments);
+  res.status(201).json(newComment);
+});
+
+app.delete('/api/news/:id/comments/:commentId', (req, res) => {
+  const { id, commentId } = req.params;
+  let comments = readData('comments.json');
+  const exists = comments.find(c => c.id === commentId && c.newsId === id);
+  if (!exists) return res.status(404).json({ error: 'Izoh topilmadi' });
+  comments = comments.filter(c => !(c.id === commentId && c.newsId === id));
+  writeData('comments.json', comments);
   res.json({ success: true });
 });
 
@@ -321,6 +387,8 @@ app.get('/api/featured-match', (req, res) => {
 app.post('/api/featured-match', (req, res) => {
   const { home, away, time, date, league } = req.body;
   if (!home || !away || !time || !date || !league) return res.status(400).json({ error: 'Barcha maydonlar majburiy' });
+  if (home === away) return res.status(400).json({ error: 'Uy va mehmon jamoalari bir xil bo\'lishi mumkin emas' });
+  
   const matches = readData('matches.json');
   const newMatch = {
     id: uuidv4(),
@@ -328,7 +396,8 @@ app.post('/api/featured-match', (req, res) => {
     away: { name: away, logo: teamLogos[away] || null },
     time,
     date,
-    league
+    league,
+    createdAt: new Date().toISOString()
   };
   matches.push(newMatch);
   writeData('matches.json', matches);
@@ -339,14 +408,20 @@ app.put('/api/featured-match/:id', (req, res) => {
   const { id } = req.params;
   const { home, away, time, date, league } = req.body;
   if (!home || !away || !time || !date || !league) return res.status(400).json({ error: 'Barcha maydonlar majburiy' });
+  if (home === away) return res.status(400).json({ error: 'Uy va mehmon jamoalari bir xil bo\'lishi mumkin emas' });
+  
   let matches = readData('matches.json');
+  const matchExists = matches.find(m => m.id === id);
+  if (!matchExists) return res.status(404).json({ error: 'Match topilmadi' });
+  
   matches = matches.map(m => m.id === id ? {
     ...m,
     home: { name: home, logo: teamLogos[home] || null },
     away: { name: away, logo: teamLogos[away] || null },
     time,
     date,
-    league
+    league,
+    updatedAt: new Date().toISOString()
   } : m);
   writeData('matches.json', matches);
   res.json({ success: true });
@@ -355,6 +430,9 @@ app.put('/api/featured-match/:id', (req, res) => {
 app.delete('/api/featured-match/:id', (req, res) => {
   const { id } = req.params;
   let matches = readData('matches.json');
+  const matchExists = matches.find(m => m.id === id);
+  if (!matchExists) return res.status(404).json({ error: 'Match topilmadi' });
+  
   matches = matches.filter(m => m.id !== id);
   writeData('matches.json', matches);
   res.json({ success: true });

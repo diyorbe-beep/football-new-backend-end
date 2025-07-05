@@ -61,5 +61,26 @@
     "email": "asdadasas@gmail.com",
     "password": "123456789",
     "role": "user"
+  },
+  {
+    "id": "6eccf9cd-5319-4814-b438-d027a2d1f194",
+    "name": "ihffhdsbfhbsd",
+    "email": "hkagshkgdashkdgs@gmail.com",
+    "password": "123456",
+    "role": "user"
+  },
+  {
+    "id": "eb7f999f-53f4-4a87-9bfd-0853b57b9228",
+    "name": "asdasds",
+    "email": "asdsadsa@mail.com",
+    "password": "1234567",
+    "role": "user"
+  },
+  {
+    "id": "a2442992-2bc1-48fa-b6c2-fb2ce4e84853",
+    "name": "asdasd",
+    "email": "asdasdasdsa@mail.com",
+    "password": "1234567",
+    "role": "user"
   }
 ]
